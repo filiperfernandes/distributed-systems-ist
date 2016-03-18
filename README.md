@@ -1,18 +1,16 @@
 # Projeto de Sistemas Distribuídos 2015-2016 #
 
-Grupo de SD ... - Campus ...
-*(preencher com número do grupo de SD no Fénix e depois apagar esta linha)*
+Grupo de SD 30 - Campus Taguspark
 
-... ... ...
+André Mendes 78079 andre.m.mendes@tecnico.ulisboa.pt
 
-... ... ...
+Filipe Fernandes 78083 filipe.r.fernandes@tecnico.ulisboa.pt
 
-... ... ...
-*(preencher com nome, número e email de membro do grupo e depois apagar esta linha)*
+João Bernardino 78022 joao.bernardino@tecnico.ulisboa.pt
 
 
 Repositório:
-[tecnico-softeng-distsys-2015/T_XX-project](https://github.com/tecnico-softeng-distsys-2015/T_XX-project/)
+[tecnico-softeng-distsys-2015/T_30-project](https://github.com/tecnico-softeng-distsys-2015/T_30-project/)
 
 -------------------------------------------------------------------------------
 
@@ -38,8 +36,8 @@ JUDDI:
 [2] Criar pasta temporária
 
 ```
-cd ...
-mkdir ...
+cd ~/Desktop
+mkdir Projecto-sdis-T30
 ```
 
 
