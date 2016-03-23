@@ -3,7 +3,7 @@ package pt.upa.broker;
 import javax.xml.ws.Endpoint;
 
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
-import pt.upa.broker.ws.BrokerImpl;
+import pt.upa.broker.ws.BrokerPort;
 
 public class BrokerApplication {
 
@@ -23,7 +23,7 @@ public class BrokerApplication {
 		Endpoint endpoint = null;
 		UDDINaming uddiNaming = null;
 		try {
-			endpoint = Endpoint.create(new BrokerImpl());
+			endpoint = Endpoint.create(new BrokerPort());
 
 			// publish endpoint
 			System.out.printf("Starting %s%n", url);
