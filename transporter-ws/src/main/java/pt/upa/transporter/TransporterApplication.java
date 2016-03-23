@@ -3,7 +3,7 @@ package pt.upa.transporter;
 import javax.xml.ws.Endpoint;
 
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
-import pt.upa.transporter.ws.TransporterImpl;
+import pt.upa.transporter.ws.TransporterPort;
 
 public class TransporterApplication {
 
@@ -23,7 +23,7 @@ public class TransporterApplication {
 		Endpoint endpoint = null;
 		UDDINaming uddiNaming = null;
 		try {
-			endpoint = Endpoint.create(new TransporterImpl());
+			endpoint = Endpoint.create(new TransporterPort());
 
 			// publish endpoint
 			System.out.printf("Starting %s%n", url);
