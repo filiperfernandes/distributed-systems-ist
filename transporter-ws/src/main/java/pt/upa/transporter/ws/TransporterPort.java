@@ -1,15 +1,42 @@
 package pt.upa.transporter.ws;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.jws.WebService;
 
 @WebService(endpointInterface = "pt.upa.transporter.ws.TransporterPortType")
 public class TransporterPort implements TransporterPortType{
 
+	TreeMap<Integer, Job> jobs = new TreeMap<Integer, Job>();
+
+	public TransporterPort() {
+		jobs.put(1, new Job("Lisboa", "Porto", "UpaTransporter1", "1", 10, JobStateView.values()[0]));
+		jobs.put(2, new Job("Bragança", "Leiria", "UpaTransporter1", "2", 25, JobStateView.values()[0]));
+
+		Set set = jobs.entrySet();
+		// Get an iterator
+		Iterator i = set.iterator();
+		// Display elements
+		while(i.hasNext()) {
+			Map.Entry me = (Map.Entry)i.next();
+			System.out.print(me.getKey() + ": ");
+			System.out.println(me.getValue());}
+	}
 	@Override
 	public String ping(String name) {
-		return "just pinged";
+		Set set = jobs.entrySet();
+		// Get an iterator
+		Iterator i = set.iterator();
+		// Display elements
+		while(i.hasNext()) {
+			Map.Entry me = (Map.Entry)i.next();
+			System.out.print(me.getKey() + ": ");
+			System.out.println(me.getValue());}
+		return "just pinged"+name+jobs;
 	}
 
 	@Override
