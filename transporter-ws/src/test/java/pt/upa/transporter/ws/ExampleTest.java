@@ -1,8 +1,10 @@
 package pt.upa.transporter.ws;
 
-import org.junit.*;
-import static org.junit.Assert.*;
-
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 /**
  *  Unit Test example
  *  
@@ -13,12 +15,10 @@ public class ExampleTest {
 
     // static members
 
-
     // one-time initialization and clean-up
 
     @BeforeClass
     public static void oneTimeSetUp() {
-
     }
 
     @AfterClass
@@ -45,7 +45,6 @@ public class ExampleTest {
 
     @Test
     public void test() {
-
         // assertEquals(expected, actual);
         // if the assert fails, the test fails
     }

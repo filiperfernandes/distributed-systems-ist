@@ -2,13 +2,11 @@ package pt.upa.transporter;
 
 import static javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.ws.BindingProvider;
 
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
-import pt.upa.transporter.ws.JobView;
 import pt.upa.transporter.ws.TransporterPortType;
 import pt.upa.transporter.ws.TransporterService;
 
@@ -50,17 +48,7 @@ public class TransporterClientApplication {
 		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 
 		System.out.println("Remote call ...");
-		
-		JobView a = port.requestJob("Badjoras", "Leiria", 5);
-		System.out.println(a);
-//		JobView v = port.decideJob("1", false);
-//		JobStateView result = port.jobStatus("1").getJobState();
-		List<JobView> test = port.listJobs();
-		System.out.println(test);
-		System.out.println(a.getJobOrigin()+a.getJobDestination()+a.getCompanyName()+"    "+a.getJobIdentifier()+"   "+ a.getJobPrice());
-//		test = port.listJobs();
-//		System.out.println(test);
-		//System.out.println(result);
+
 	}
 }
 

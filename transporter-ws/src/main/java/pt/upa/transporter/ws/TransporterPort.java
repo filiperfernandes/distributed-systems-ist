@@ -57,9 +57,9 @@ public class TransporterPort implements TransporterPortType{
 		
 		//Check if there are sufficient verifications
 		String [] norte = {"Porto", "Braga", "Viana do Castelo", "Vila Real", "Bragança"};
-		String [] centro = {"Lisboa" , "Leiria", "Santaré́m", "Castelo Branco", "Coimbra", "Aveiro", 
-				"Viseu", "Guarda"};
-		String [] sul = {"Setúbal","É́vora","Portalegre","Beja","Faro"};
+//		String [] centro = {"Lisboa" , "Leiria", "Santaré́m", "Castelo Branco", "Coimbra", "Aveiro", 
+//				"Viseu", "Guarda"};
+//		String [] sul = {"Setúbal","É́vora","Portalegre","Beja","Faro"};
 		
 		for (String n: norte){
 			if ( origin.equals(n) || destination.equals(n) ){
@@ -101,7 +101,6 @@ public class TransporterPort implements TransporterPortType{
 		}
 
 		else if(price<=10){
-			//Falta gerar/escolher uma transportadora certa consoante origem e destino
 			String newId=getNextId();
 			Job newJ = new Job(origin, destination, getTransp(origin, destination), newId, genRandom(0,price), JobStateView.values()[0]);
 			jobs.put(newId, newJ);
