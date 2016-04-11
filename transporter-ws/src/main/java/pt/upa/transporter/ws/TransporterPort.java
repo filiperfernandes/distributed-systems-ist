@@ -13,26 +13,18 @@ public class TransporterPort implements TransporterPortType{
 
 	TreeMap<String, Job> jobs = new TreeMap<String, Job>();
 
-	public TransporterPort() {
+	String tid ="";
+	
+	//public TransporterPort() {}
+	
+	public TransporterPort(String tp) {
 
+		this.tid=tp;
 		//Create Jobs
 
-		jobs.put("1", new Job("Lisboa", "Porto", "UpaTransporter1", "1", 10, JobStateView.values()[0]));
-		jobs.put("2", new Job("Bragança", "Leiria", "UpaTransporter1", "2", 25, JobStateView.values()[0]));
+//		jobs.put("1", new Job("Lisboa", "Porto", "UpaTransporter1", "1", 10, JobStateView.values()[0]));
+//		jobs.put("2", new Job("Bragança", "Leiria", "UpaTransporter1", "2", 25, JobStateView.values()[0]));
 
-		/*
-		//Test some stuff
-
-		Set set = jobs.entrySet();
-		// Get an iterator
-		Iterator i = set.iterator();
-		// Display elements
-		while(i.hasNext()) {
-			Map.Entry me = (Map.Entry)i.next();
-			System.out.print(me.getKey() + ": ");
-			System.out.println(me.getValue());}
-
-		 */
 	}
 	
 	public Integer genRandom(Integer min, Integer max){
@@ -111,11 +103,12 @@ public class TransporterPort implements TransporterPortType{
 		//If price: 10<=price<100
 		else{
 			
-			Integer tid= genRandom(1,3);
-			String transp="UpaTransporter"+String.valueOf(tid);
+			//Integer tid= genRandom(1,3);
+			String transp="UpaTransporter"+tid;
+			//String.valueOf(tid);
 			
 			
-			if ( (price % 2 == 0 && tid %2 ==0) || (price % 2 != 0 && tid %2 !=0)){
+			if ( (price % 2 == 0 && Integer.parseInt(tid) %2 ==0) || (price % 2 != 0 && Integer.parseInt(tid) %2 !=0)){
 				String newId=getNextId();
 				int newPrice=genRandom(0,price);
 				Job newJ =new Job(origin, destination, transp, newId, newPrice, JobStateView.values()[0]);

@@ -50,7 +50,8 @@ public class BrokerClientApplication {
 
 		System.out.println("Remote call ...");
 		
-		System.out.println(port.ping("bard"));
+		System.out.println(port.requestTransport("Porto", "Braga", 10));
+		System.out.println(port.viewTransport("1").getOrigin()+port.viewTransport("1").getDestination() + port.viewTransport("1").getPrice()+ port.viewTransport("1").getState()+port.viewTransport("1").getTransporterCompany());
 
 	}
 }

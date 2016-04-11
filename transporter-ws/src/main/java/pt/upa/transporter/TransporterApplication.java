@@ -23,7 +23,13 @@ public class TransporterApplication {
 		Endpoint endpoint = null;
 		UDDINaming uddiNaming = null;
 		try {
-			endpoint = Endpoint.create(new TransporterPort());
+			if(name.equals("UpaTransporter1")){
+				endpoint = Endpoint.create(new TransporterPort("1"));
+			}
+			
+			else if(name.equals("UpaTransporter2")){
+				endpoint = Endpoint.create(new TransporterPort("2"));
+			}
 
 			// publish endpoint
 			System.out.printf("Starting %s%n", url);
