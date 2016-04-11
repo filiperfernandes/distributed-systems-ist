@@ -51,7 +51,8 @@ public class TransporterClientApplication {
 		System.out.println(port.listJobs());
 		System.out.println(port.requestJob("Porto", "Braga", 10));
 		System.out.println(port.jobStatus("1").getJobOrigin()+ port.jobStatus("1").getJobDestination()+ port.jobStatus("1").getJobPrice()+port.jobStatus("1").getCompanyName() );
-		
+		port.clearJobs();
+		System.out.println(port.listJobs());
 
 	}
 }

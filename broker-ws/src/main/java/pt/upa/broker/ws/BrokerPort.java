@@ -1,5 +1,6 @@
 package pt.upa.broker.ws;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -218,13 +219,20 @@ public TransporterPort getTransp(String origin , String destination){
 
 	@Override
 	public List<TransportView> listTransports() {
-		// TODO Auto-generated method stub
-		return null;
+		List<TransportView> list = new ArrayList<>();
+
+		for(Map.Entry<String, Transport> entry : transporters.entrySet()) {
+			TransportView value = entry.getValue().getJob();
+			list.add(value);
+		}
+		return list;
 	}
 
 	@Override
 	public void clearTransports() {
-		// TODO Auto-generated method stub
+		transporters.clear();
+		new TransporterPort("1").clearJobs();
+		new TransporterPort("2").clearJobs();
 
 	}
 

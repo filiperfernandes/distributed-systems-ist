@@ -181,15 +181,8 @@ public class TransporterPort implements TransporterPortType{
 
 	@Override
 	public void clearJobs() {
-		
-		//Not working...
-		
-		//		for(Map.Entry<String, Job> entry : jobs.entrySet()) {
-		//			String key = entry.getKey();
-		//			jobs.remove(key);
-		//		}
-		jobs.remove(1);
-		jobs.remove(2);
+
+		jobs.clear();
 
 	}
 
