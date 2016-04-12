@@ -49,13 +49,14 @@ public class TransporterClientApplication {
 		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 
 		System.out.println("Remote call ...");
-		//port.clearJobs();
+		port.clearJobs();
 		System.out.println(port.listJobs());
-		//System.out.println(port.requestJob("Porto", "Braga", 10));
-		//System.out.println(port.jobStatus("1").getJobOrigin()+ port.jobStatus("1").getJobDestination()+ port.jobStatus("1").getJobPrice()+port.jobStatus("1").getCompanyName()+port.jobStatus("1").getJobState() );
-//		port.decideJob("1", true);
-//		TimeUnit.SECONDS.sleep(5);
-//		System.out.println(port.jobStatus("1").getJobState());
+		System.out.println(port.requestJob("Porto", "Braga", 10));
+		System.out.println(port.jobStatus("1").getJobOrigin()+ port.jobStatus("1").getJobDestination()+ port.jobStatus("1").getJobPrice()+port.jobStatus("1").getCompanyName()+port.jobStatus("1").getJobState() );
+		port.decideJob("1", true);
+		TimeUnit.SECONDS.sleep(9);
+		System.out.println(port.jobStatus("1").getJobState());
+
 //		
 //		port.clearJobs();
 		
