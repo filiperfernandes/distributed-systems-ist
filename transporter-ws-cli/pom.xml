@@ -23,7 +23,7 @@
 
 		<mainclass>pt.upa.transporter.TransporterClientApplication</mainclass>
 
-		<ws.name>UpaTransporter1</ws.name>
+		<ws.name>UpaTransporter</ws.name>
 		<uddi.url>http://localhost:9090</uddi.url>
 	</properties>
 

@@ -88,42 +88,88 @@ public class TransporterPort implements TransporterPortType{
 			p.setPrice(price);
 			throw new BadPriceFault_Exception("Preço menor que zero", p);
 		}
-		if(price>100){
-			return null;
-		}
-
-		else if(price<=10){
-			String newId=getNextId();
-			Job newJ = new Job(origin, destination, getTransp(origin, destination), newId, genRandom(0,price), JobStateView.values()[0]);
-			jobs.put(newId, newJ);
-			return newJ.getJob();
-		}
 		
+//		JobView t1 = t1Job(String origin, String destination, int price);
+//		JobView t2 = t2Job(String origin, String destination, int price);
 		
-		//If price: 10<=price<100
-		else{
+		if (tid.equals("1")){
+			//Tratamento do UpaTransporter1
+			if(getTransp(origin, destination).equals("UpaTransporter2")){
+				return null;
+			}
 			
-			//Integer tid= genRandom(1,3);
-			String transp="UpaTransporter"+tid;
-			//String.valueOf(tid);
+			else if(price>100){
+				return null;
+			}
 			
-			
-			if ( (price % 2 == 0 && Integer.parseInt(tid) %2 ==0) || (price % 2 != 0 && Integer.parseInt(tid) %2 !=0)){
+			else if(price<=10){
 				String newId=getNextId();
-				int newPrice=genRandom(0,price);
-				Job newJ =new Job(origin, destination, transp, newId, newPrice, JobStateView.values()[0]);
+				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(0,price), JobStateView.values()[0]);
 				jobs.put(newId, newJ);
 				return newJ.getJob();
 			}
+			
+			else if (price %2 !=0){
+				String newId=getNextId();
+				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(0,price), JobStateView.values()[0]);
+				jobs.put(newId, newJ);
+				return newJ.getJob();
+			}
+			
 			else{
 				String newId=getNextId();
-				int newPrice=genRandom(price,100);
-				Job newJ =new Job(origin, destination, transp, newId, newPrice, JobStateView.values()[0]);
+				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(price,101), JobStateView.values()[0]);
 				jobs.put(newId, newJ);
 				return newJ.getJob();
 			}
+			
 		}
-
+		
+		else{
+			//Tratamento do UpaTransporter2
+			if(getTransp(origin, destination).equals("UpaTransporter1")){
+				return null;
+			}
+			
+			else if(price>100){
+				return null;
+			}
+			
+			else if(price<=10){
+				String newId=getNextId();
+				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(0,price), JobStateView.values()[0]);
+				jobs.put(newId, newJ);
+				return newJ.getJob();
+			}
+			
+			else if (price %2 ==0){
+				String newId=getNextId();
+				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(0,price), JobStateView.values()[0]);
+				jobs.put(newId, newJ);
+				return newJ.getJob();
+			}
+			
+			else{
+				String newId=getNextId();
+				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(price,101), JobStateView.values()[0]);
+				jobs.put(newId, newJ);
+				return newJ.getJob();
+			}
+			
+			
+			
+		}
+		
+//		if (t1.getJobPrice()< t2.getJobPrice()){
+//			decideJob(t1.getJobIdentifier(), true);
+//			decideJob(t2.getJobIdentifier(), false);
+//			return t1;
+//		}
+//		else {
+//			decideJob(t1.getJobIdentifier(), false);
+//			decideJob(t2.getJobIdentifier(), true);
+//			return t2;
+//		}
 	}
 
 

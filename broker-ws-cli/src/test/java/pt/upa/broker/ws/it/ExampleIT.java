@@ -81,17 +81,17 @@ public class ExampleIT {
 
 
 
-	@Test
-	public void test() {
-		
-		String actual = "";
-		String expected = "Just Pinged test";
-		
-		actual =  port.ping("test");
-		
-		assertEquals(expected, actual);
-		// if the assert fails, the test fails
-	}
+//	@Test
+//	public void test() {
+//		
+//		String actual = "";
+//		String expected = "Just Pinged test";
+//		
+//		actual =  port.ping("test");
+//		
+//		assertEquals(expected, actual);
+//		// if the assert fails, the test fails
+//	}
 
 	/*
 	@Test

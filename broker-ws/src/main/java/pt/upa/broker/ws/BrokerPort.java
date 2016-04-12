@@ -93,7 +93,7 @@ public TransporterPort getTransp(String origin , String destination){
 //				return "O FIlipe é muito macho";
 //			}
 //		}
-		return "O André bard";
+		return "O André bard"+name;
 	}
 
 
@@ -120,14 +120,19 @@ public TransporterPort getTransp(String origin , String destination){
 		}
 		String id = getNextId();
 		
-		TransporterPort port = getTransp(origin, destination);
-
+		//TransporterPort port = getTransp(origin, destination);
+		
+		TransporterPort t1 = new TransporterPort("1");
+		TransporterPort t2 = new TransporterPort("2");
+		
 		transporters.put(id, new Transport(id,origin,destination ,price, null,TransportStateView.values()[0]));
-		JobView j=null;
-
-
+		
+		JobView j1 = null;
+		JobView j2 = null;
+		
+		
 		try {
-			j = port.requestJob(origin, destination, price);
+			j1 = t1.requestJob(origin, destination, price);
 		} catch (BadLocationFault_Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -135,15 +140,50 @@ public TransporterPort getTransp(String origin , String destination){
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		try {
+			j2 = t2.requestJob(origin, destination, price);
+		} catch (BadLocationFault_Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadPriceFault_Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
-		if (j==null){
+		if (j1==null&&j2==null){
 			UnavailableTransportFault b = new UnavailableTransportFault();
 			b.setOrigin(origin);
 			b.setDestination(destination);
 			throw new UnavailableTransportFault_Exception("Viagem indisponivel", b);
 		}
-
-		else if(j.getJobPrice()>price){
+		
+		//Por a budgeted
+		Transport t = transporters.get(id);
+		t.getJob().setState(TransportStateView.values()[1]);
+		
+		
+		if ( j1==null  ){
+			try {
+				t2.decideJob(j2.getJobIdentifier(), true);
+				t.getJob().setTransporterCompany("2");
+			} catch (BadJobFault_Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		else if (j2==null){
+			try {
+				t1.decideJob(j1.getJobIdentifier(), true);
+				t.getJob().setTransporterCompany("1");
+			} catch (BadJobFault_Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		else if(j1.getJobPrice()>price&&j2.getJobPrice()>price){
+			t.getJob().setState(TransportStateView.values()[2]);
 			UnavailableTransportPriceFault b = new UnavailableTransportPriceFault();
 			b.setBestPriceFound(price);
 			throw new UnavailableTransportPriceFault_Exception("O preço está errado", b);
@@ -151,41 +191,50 @@ public TransporterPort getTransp(String origin , String destination){
 
 		else{
 
-
-			//Por a budgeted
-			Transport t = transporters.get(id);
-			t.getJob().setState(TransportStateView.values()[1]);
-			t.getJob().setTransporterCompany(tid);
-
-
 			//DecideJob
 
-			if(j.getJobPrice()<=t.getJob().getPrice()){
+			if(j1.getJobPrice()<j2.getJobPrice()){
 				try {
-					j=port.decideJob(id, true);
-					t.getJob().setPrice(j.getJobPrice());
+					t1.decideJob(j1.getJobIdentifier(), true);
+					t.getJob().setTransporterCompany("1");
 				} catch (BadJobFault_Exception e) {
-					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					t2.decideJob(j2.getJobIdentifier(), false);
+				} catch (BadJobFault_Exception e) {
 					e.printStackTrace();
 				}
 			}
+			else if (j1.getJobPrice()>j2.getJobPrice()){
+				try {
+					t1.decideJob(j1.getJobIdentifier(), false);
+				} catch (BadJobFault_Exception e) {
+					e.printStackTrace();
+				}
+				try {
+					t2.decideJob(j2.getJobIdentifier(), true);
+					t.getJob().setTransporterCompany("2");
+				} catch (BadJobFault_Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
 			else{
 				try {
-					j=port.decideJob(id, false);
+					t1.decideJob(j1.getJobIdentifier(), true);
+					t.getJob().setTransporterCompany("1");
 				} catch (BadJobFault_Exception e) {
-					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					t2.decideJob(j2.getJobIdentifier(), false);
+				} catch (BadJobFault_Exception e) {
 					e.printStackTrace();
 				}
 			}
 
-			//Mudar estado para booked ou failes
-			if(j.getJobState().equals(JobStateView.values()[2])){
-				t.getJob().setState(TransportStateView.values()[3]);
-			}
-			else if(j.getJobState().equals(JobStateView.values()[1])){
-				t.getJob().setState(TransportStateView.values()[2]);	
-
-			}
+			t.getJob().setState(TransportStateView.values()[3]);
 		}
 		return "Success";
 	}
