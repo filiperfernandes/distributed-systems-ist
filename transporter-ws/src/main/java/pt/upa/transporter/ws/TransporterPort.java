@@ -11,7 +11,7 @@ import javax.jws.WebService;
 @WebService(endpointInterface = "pt.upa.transporter.ws.TransporterPortType")
 public class TransporterPort implements TransporterPortType{
 
-	TreeMap<String, Job> jobs = new TreeMap<String, Job>();
+	public static TreeMap<String, Job> jobs = new TreeMap<String, Job>();
 
 	String tid ="";
 	
@@ -26,6 +26,7 @@ public class TransporterPort implements TransporterPortType{
 //		jobs.put("2", new Job("Bragança", "Leiria", "UpaTransporter1", "2", 25, JobStateView.values()[0]));
 
 	}
+	
 	
 	public Integer genRandom(Integer min, Integer max){
 		Random r = new Random();
@@ -156,20 +157,8 @@ public class TransporterPort implements TransporterPortType{
 				return newJ.getJob();
 			}
 			
-			
-			
 		}
 		
-//		if (t1.getJobPrice()< t2.getJobPrice()){
-//			decideJob(t1.getJobIdentifier(), true);
-//			decideJob(t2.getJobIdentifier(), false);
-//			return t1;
-//		}
-//		else {
-//			decideJob(t1.getJobIdentifier(), false);
-//			decideJob(t2.getJobIdentifier(), true);
-//			return t2;
-//		}
 	}
 
 
@@ -183,6 +172,10 @@ public class TransporterPort implements TransporterPortType{
 
 			if(id.equals(key) && accept==true){
 				value.getJob().setJobState(JobStateView.values()[2]);
+				
+				ChangeStateThread p = new ChangeStateThread(value);
+			     p.start();
+			     
 				return value.getJob();
 			}
 			else if(id.equals(key) && accept==false){
@@ -205,6 +198,8 @@ public class TransporterPort implements TransporterPortType{
 		for(Map.Entry<String, Job> entry : jobs.entrySet()) {
 			String key = entry.getKey();
 			Job value = entry.getValue();
+			
+			System.out.println(key+value);
 			if(id.equals(key)){
 				return value.getJob();
 			}
