@@ -65,7 +65,7 @@ public class TransporterPort implements TransporterPortType{
 
 	@Override
 	public String ping(String name) {
-		return "just pinged"+name;
+		return "Just pinged "+name;
 	}
 
 	@Override

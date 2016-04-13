@@ -20,7 +20,7 @@ public class BrokerPort implements BrokerPortType {
 	TreeMap<String, Transport> transporters = new TreeMap<String, Transport>();
 	TransporterPort t1 = new TransporterPort("1");
 	TransporterPort t2 = new TransporterPort("2");
-	
+
 
 	//List<JobView> list = new TransporterPort().listJobs();
 
@@ -42,15 +42,24 @@ public class BrokerPort implements BrokerPortType {
 	//	}
 
 
-	public TransporterPort getTransp(String origin , String destination){
+	public TransporterPort getTransp(String origin , String destination) throws UnavailableTransportFault_Exception{
 
 		//Check if there are sufficient verifications
 		String [] norte = {"Porto", "Braga", "Viana do Castelo", "Vila Real", "Bragança"};
 		//		String [] centro = {"Lisboa" , "Leiria", "Santaré́m", "Castelo Branco", "Coimbra", "Aveiro", 
 		//				"Viseu", "Guarda"};
-		//		String [] sul = {"Setúbal","É́vora","Portalegre","Beja","Faro"};
+		String [] sul = {"Setúbal","É́vora","Portalegre","Beja","Faro"};
 
 		for (String n: norte){
+			for (String s :sul){
+
+				if (  (origin.equals(n)&&destination.equals(s)) || (origin.equals(s)&&destination.equals(n))  ){
+					UnavailableTransportFault b = new UnavailableTransportFault();
+					b.setOrigin(origin);
+					b.setDestination(destination);
+					throw new UnavailableTransportFault_Exception("Viagem indisponivel", b);
+				}
+			}
 			if ( origin.equals(n) || destination.equals(n) ){
 				tid="2";
 				return new TransporterPort("2");
@@ -59,7 +68,7 @@ public class BrokerPort implements BrokerPortType {
 		tid="1";	
 		return new TransporterPort("1");
 	}
-	
+
 	public TransportStateView convertState(JobStateView state){
 		if (state==JobStateView.values()[3]){
 			return TransportStateView.values()[4];
@@ -100,17 +109,9 @@ public class BrokerPort implements BrokerPortType {
 
 	@Override
 	public String ping(String name) {
-		//		list=new TransporterPort().listJobs();
-		//
-		//		for (JobView temp: list){
-		//			if(temp.getJobOrigin().equals(name)){
-		//				return "O FIlipe é muito macho";
-		//			}
-		//		}
-		
-		return "O André bard"+name;
-	}
 
+		return "Just Pinged " + name;
+	}
 
 
 	@Override
@@ -136,8 +137,8 @@ public class BrokerPort implements BrokerPortType {
 		String id = getNextId();
 
 
-//		TransporterPort t1 = new TransporterPort("1");
-//		TransporterPort t2 = new TransporterPort("2");
+		//		TransporterPort t1 = new TransporterPort("1");
+		//		TransporterPort t2 = new TransporterPort("2");
 
 		//Requested
 		transporters.put(id, new Transport(id,origin,destination ,price, null,TransportStateView.values()[0]));
@@ -265,8 +266,8 @@ public class BrokerPort implements BrokerPortType {
 			}
 
 		}
-		
-		
+
+
 		//Booked
 		t.getJob().setState(TransportStateView.values()[3]);
 		return t.getJob().getId();
@@ -279,25 +280,27 @@ public class BrokerPort implements BrokerPortType {
 
 	@Override
 	public TransportView viewTransport(String id) throws UnknownTransportFault_Exception {
-		if(id==null){
-			UnknownTransportFault b = new UnknownTransportFault();
-			b.setId(id);
-			throw new UnknownTransportFault_Exception("O id é inválido", b);
-		}
-		else{
+		//		if(id==null){
+		//			UnknownTransportFault b = new UnknownTransportFault();
+		//			b.setId(id);
+		//			throw new UnknownTransportFault_Exception("O id é inválido", b);
+		//		}
+		//		else{
 
-			for(Map.Entry<String,Transport > entry : transporters.entrySet()) {
-				String key = entry.getKey();
-				Transport value = entry.getValue();
-				if(id.equals(key)){
-					TransportStateView tsv = convertState(t2.jobStatus(id).getJobState());
-					value.getJob().setState(tsv);
-					return value.getJob();
-				}
+		for(Map.Entry<String,Transport > entry : transporters.entrySet()) {
+			String key = entry.getKey();
+			Transport value = entry.getValue();
+			if(id.equals(key)){
+				TransportStateView tsv = convertState(t2.jobStatus(id).getJobState());
+				value.getJob().setState(tsv);
+				return value.getJob();
 			}
-
 		}
-		return null;
+		UnknownTransportFault b = new UnknownTransportFault();
+		b.setId(id);
+		throw new UnknownTransportFault_Exception("O id é inválido", b);
+
+
 	}
 
 	@Override
