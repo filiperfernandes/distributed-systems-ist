@@ -6,27 +6,30 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.jws.WebService;
+import javax.xml.registry.JAXRException;
 
 import pt.upa.transporter.ws.BadJobFault_Exception;
 import pt.upa.transporter.ws.BadLocationFault_Exception;
 import pt.upa.transporter.ws.BadPriceFault_Exception;
 import pt.upa.transporter.ws.JobStateView;
 import pt.upa.transporter.ws.JobView;
-import pt.upa.transporter.ws.TransporterPort;
+import pt.upa.transporter.ws.cli.TransporterClient;
 
 @WebService(endpointInterface = "pt.upa.broker.ws.BrokerPortType")
 public class BrokerPort implements BrokerPortType {
 
 	TreeMap<String, Transport> transporters = new TreeMap<String, Transport>();
-	TransporterPort t1 = new TransporterPort("1");
-	TransporterPort t2 = new TransporterPort("2");
 
+	TransporterClient t1 ;
+	TransporterClient t2;
 
 	//List<JobView> list = new TransporterPort().listJobs();
 
 	String tid="";
 
-	public BrokerPort() {
+	public BrokerPort() throws JAXRException {
+		t1 = new TransporterClient("http://localhost:9090", "UpaTransporter1");
+		t2= new TransporterClient("http://localhost:9090", "UpaTransporter2");
 
 
 		//		transporters.put("1", new Transport("1","Lisboa","Porto",2, "UpaTransporter1",TransportStateView.values()[0]));
@@ -42,7 +45,7 @@ public class BrokerPort implements BrokerPortType {
 	//	}
 
 
-	public TransporterPort getTransp(String origin , String destination) throws UnavailableTransportFault_Exception{
+	public TransporterClient getTransp(String origin , String destination) throws UnavailableTransportFault_Exception, JAXRException{
 
 		//Check if there are sufficient verifications
 		String [] norte = {"Porto", "Braga", "Viana do Castelo", "Vila Real", "Bragança"};
@@ -54,19 +57,20 @@ public class BrokerPort implements BrokerPortType {
 			for (String s :sul){
 
 				if (  (origin.equals(n)&&destination.equals(s)) || (origin.equals(s)&&destination.equals(n))  ){
-					UnavailableTransportFault b = new UnavailableTransportFault();
-					b.setOrigin(origin);
-					b.setDestination(destination);
-					throw new UnavailableTransportFault_Exception("Viagem indisponivel", b);
+//					UnavailableTransportFault b = new UnavailableTransportFault();
+//					b.setOrigin(origin);
+//					b.setDestination(destination);
+//					throw new UnavailableTransportFault_Exception("Viagem indisponivel", b);
+					return null;
 				}
 			}
 			if ( origin.equals(n) || destination.equals(n) ){
 				tid="2";
-				return new TransporterPort("2");
+				return new TransporterClient("http://localhost:9090", "UpaTransporter2");
 			}
 		}
 		tid="1";	
-		return new TransporterPort("1");
+		return new TransporterClient("http://localhost:9090", "UpaTransporter1");
 	}
 
 	public TransportStateView convertState(JobStateView state){
@@ -76,9 +80,10 @@ public class BrokerPort implements BrokerPortType {
 		else if (state==JobStateView.values()[4]){
 			return TransportStateView.values()[5];
 		}
-		else{
+		else if (state==JobStateView.values()[5]){
 			return TransportStateView.values()[6];
 		}
+		return null;
 	}
 
 	public boolean checkValidLocation(String location){
@@ -133,6 +138,17 @@ public class BrokerPort implements BrokerPortType {
 			InvalidPriceFault p = new InvalidPriceFault();
 			p.setPrice(price);
 			throw new InvalidPriceFault_Exception("O preço é inválido",p);
+		}
+		
+		try {
+			if(getTransp(origin, destination)==null){
+				UnavailableTransportFault b = new UnavailableTransportFault();
+				b.setOrigin(origin);
+				b.setDestination(destination);
+				throw new UnavailableTransportFault_Exception("Viagem indisponivel", b);
+			}
+		} catch (JAXRException e1) {
+			e1.printStackTrace();
 		}
 		String id = getNextId();
 
@@ -292,8 +308,13 @@ public class BrokerPort implements BrokerPortType {
 			Transport value = entry.getValue();
 			if(id.equals(key)){
 				TransportStateView tsv = convertState(t2.jobStatus(id).getJobState());
-				value.getJob().setState(tsv);
-				return value.getJob();
+				if (tsv==null){
+					return value.getJob();
+				}
+				else{
+					value.getJob().setState(tsv);
+					return value.getJob();
+				}
 			}
 		}
 		UnknownTransportFault b = new UnknownTransportFault();
@@ -317,8 +338,8 @@ public class BrokerPort implements BrokerPortType {
 	@Override
 	public void clearTransports() {
 		transporters.clear();
-		new TransporterPort("1").clearJobs();
-		new TransporterPort("2").clearJobs();
+		t1.clearJobs();
+		t2.clearJobs();
 
 	}
 

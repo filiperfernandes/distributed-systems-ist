@@ -116,11 +116,11 @@ public class ExampleIT {
 		port.requestTransport("Lisboa","Porto", 101);
 	}
 	
-//	@Test(expected=UnavailableTransportFault_Exception.class)
-//	public void unavailableTransportRequestTransport02() throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception{
-//		
-//		port.requestTransport("Beja","Porto", 50);
-//	}
+	@Test(expected=UnavailableTransportFault_Exception.class)
+	public void unavailableTransportRequestTransport02() throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception{
+		
+		port.requestTransport("Porto","Beja", 50);
+	}
 	
 	@Test
 	public void unavailableTransportFault_ExceptionRequestTransport() throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception{

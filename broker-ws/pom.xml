@@ -63,7 +63,7 @@
 		</dependency>
 		<dependency>
 			<groupId>pt.upa.t30</groupId>
-			<artifactId>transporter-ws</artifactId>
+			<artifactId>transporter-ws-cli</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
