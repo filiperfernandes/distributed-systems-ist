@@ -23,39 +23,39 @@ public class TransporterClient implements TransporterPortType {
 	// service, port as members
 	TransporterPortType stub;
 	TransporterService service;
-	
+
 	// constructor
 	public TransporterClient(String uddiURL, String name) throws JAXRException {
 		this.uddiURL=uddiURL;
 		this.name=name;
-		
+
 		System.out.printf("Contacting UDDI at %s%n", uddiURL);
 		UDDINaming uddiNaming = new UDDINaming(uddiURL);
-		
+
 		System.out.printf("Looking for '%s'%n", name);
 		String endpointAddress = uddiNaming.lookup(name);
-		
+
 		if (endpointAddress == null) {
 			System.out.println("Not found!");
 			throw new IllegalArgumentException("Não encontrei no uddi");
 		} else {
 			System.out.printf("Found %s%n", endpointAddress);
-			
+
 			System.out.println("Creating stub ...");
 			service = new TransporterService();
 			stub = service.getTransporterPort();
-			
+
 			BindingProvider bindingProvider = (BindingProvider) stub;
 			Map<String, Object> requestContext = bindingProvider.getRequestContext();
 			requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
-		
-		
-	}}
-	
-	
-	
+
+
+		}}
+
+
+
 	// operations
-	
+
 	public String ping(String name) {
 		return stub.ping(name);
 	}
@@ -85,11 +85,7 @@ public class TransporterClient implements TransporterPortType {
 	public void clearJobs() {
 		stub.clearJobs();
 	}
-	
-	public  void main(String[] args) throws Exception {
-		
-		
 
-		}
-	}
+
+}
 
