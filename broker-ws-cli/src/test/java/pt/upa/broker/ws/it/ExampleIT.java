@@ -12,12 +12,7 @@ import javax.xml.ws.BindingProvider;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
 import pt.upa.broker.ws.BrokerPortType;
 import pt.upa.broker.ws.BrokerService;
-import pt.upa.broker.ws.InvalidPriceFault_Exception;
-import pt.upa.broker.ws.TransportView;
-import pt.upa.broker.ws.UnavailableTransportFault_Exception;
-import pt.upa.broker.ws.UnavailableTransportPriceFault_Exception;
 import pt.upa.broker.ws.UnknownLocationFault_Exception;
-import pt.upa.broker.ws.UnknownTransportFault_Exception;
 
 import static javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY;
 import static org.junit.Assert.*;
@@ -70,6 +65,7 @@ public class ExampleIT {
 
 	@Before
 	public void setUp() {
+		port.clearTransports();
 	}
 
 	@After
@@ -82,7 +78,7 @@ public class ExampleIT {
 
 
 	@Test
-	public void test() {
+	public void testPing() {
 		
 		String actual = "";
 		String expected = "Just Pinged test";
@@ -90,43 +86,12 @@ public class ExampleIT {
 		actual =  port.ping("test");
 		
 		assertEquals(expected, actual);
-		// if the assert fails, the test fails
 	}
 
-	/*
-	@Test
-	public void test01() {
-
-		String actual = "";
-		String expected = "A origem está errada.";
-
-		try {
-			actual =  port.requestTransport("Barcelona", "Leiria", 5);
-		} catch (InvalidPriceFault_Exception | UnavailableTransportFault_Exception
-				| UnavailableTransportPriceFault_Exception | UnknownLocationFault_Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		assertEquals(expected, actual);
-	}*/
+	//Testes do requestTransport
 	
-	/*
-	@Test
-	public void test02() {
+	@Test(expected=UnknownLocationFault_Exception.class)
+	public void unknownLocationFaultRequestTransport(){
 		
-		TransportView actual
-		Class<UnknownTransportFault_Exception> expected = UnknownTransportFault_Exception.class;
-	
-		try {
-			actual = port.viewTransport(null);
-		} catch (UnknownTransportFault_Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
-		assertEquals(expected, actual);
 	}
-	*/
 }
