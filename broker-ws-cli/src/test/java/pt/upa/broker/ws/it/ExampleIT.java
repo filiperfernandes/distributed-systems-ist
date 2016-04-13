@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
 import pt.upa.broker.ws.BrokerPortType;
 import pt.upa.broker.ws.BrokerService;
 import pt.upa.broker.ws.InvalidPriceFault_Exception;
+import pt.upa.broker.ws.TransportView;
 import pt.upa.broker.ws.UnavailableTransportFault_Exception;
 import pt.upa.broker.ws.UnavailableTransportPriceFault_Exception;
 import pt.upa.broker.ws.UnknownLocationFault_Exception;
@@ -82,10 +83,9 @@ public class ExampleIT {
 	@Test
 	public void testPing() {
 		
-		String actual = "";
 		String expected = "Just Pinged test";
 		
-		actual =  port.ping("test");
+		String actual =  port.ping("test");
 		
 		assertEquals(expected, actual);
 	}
@@ -122,15 +122,22 @@ public class ExampleIT {
 		port.requestTransport("Porto","Beja", 50);
 	}
 	
+		//Sucesso transportadora 1
 	@Test
-	public void unavailableTransportFault_ExceptionRequestTransport() throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception{
+	public void requestTransport() throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception{
 		
-		String actual = "1";
-		String expected = "";
+		String actual = port.requestTransport("Lisboa","Porto", 50);
 		
-		expected = port.requestTransport("Beja","Leiria", 25);
+		assertEquals("1", actual);	
+	}
+	
+		//Sucesso transportadora 2
+	@Test
+	public void sequestTransport() throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception{
 		
-		assertEquals(expected, actual);
+		String actual = port.requestTransport("Beja","Leiria", 25);
+		
+		assertEquals("1", actual);	
 	}
 	
 	//Testes viewTransport
@@ -142,4 +149,16 @@ public class ExampleIT {
 		
 		port.viewTransport("1234");
 	}
+		//Sucesso
+	@Test
+	public void ViewTransport() throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception, UnknownTransportFault_Exception{
+		
+		
+		String y = port.requestTransport("Leiria", "Faro", 5);
+		
+		TransportView expected = port.viewTransport(y);
+		
+		assertTrue( expected instanceof TransportView);
+	}
+	
 }

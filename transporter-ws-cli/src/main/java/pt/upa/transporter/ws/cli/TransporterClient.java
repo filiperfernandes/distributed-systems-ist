@@ -86,10 +86,5 @@ public class TransporterClient implements TransporterPortType {
 		stub.clearJobs();
 	}
 	
-	public  void main(String[] args) throws Exception {
-		
-		
-
-		}
-	}
+}
 

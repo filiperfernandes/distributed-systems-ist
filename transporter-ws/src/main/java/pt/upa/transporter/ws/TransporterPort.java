@@ -15,16 +15,9 @@ public class TransporterPort implements TransporterPortType{
 
 	String tid ="";
 
-	//public TransporterPort() {}
-
 	public TransporterPort(String tp) {
 
 		this.tid=tp;
-		//Create Jobs
-
-		//		jobs.put("1", new Job("Lisboa", "Porto", "UpaTransporter1", "1", 10, JobStateView.values()[0]));
-		//		jobs.put("2", new Job("Bragança", "Leiria", "UpaTransporter1", "2", 25, JobStateView.values()[0]));
-
 	}
 
 
@@ -65,7 +58,7 @@ public class TransporterPort implements TransporterPortType{
 
 	@Override
 	public String ping(String name) {
-		return "Just pinged "+name;
+		return "Just Pinged "+name;
 	}
 
 	@Override
@@ -89,9 +82,6 @@ public class TransporterPort implements TransporterPortType{
 			p.setPrice(price);
 			throw new BadPriceFault_Exception("Preço menor que zero", p);
 		}
-
-		//		JobView t1 = t1Job(String origin, String destination, int price);
-		//		JobView t2 = t2Job(String origin, String destination, int price);
 
 		if (tid.equals("1")){
 			//Tratamento do UpaTransporter1
@@ -218,7 +208,7 @@ public class TransporterPort implements TransporterPortType{
 		}
 		return list;
 
-	}
+	}	
 
 	@Override
 	public void clearJobs() {
