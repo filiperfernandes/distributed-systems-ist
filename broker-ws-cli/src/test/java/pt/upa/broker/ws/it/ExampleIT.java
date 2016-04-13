@@ -75,8 +75,6 @@ public class ExampleIT {
 
 	// tests
 
-
-
 	@Test
 	public void testPing() {
 		

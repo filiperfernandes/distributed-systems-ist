@@ -11,28 +11,29 @@ import javax.jws.WebService;
 @WebService(endpointInterface = "pt.upa.transporter.ws.TransporterPortType")
 public class TransporterPort implements TransporterPortType{
 
-	TreeMap<String, Job> jobs = new TreeMap<String, Job>();
+	public static TreeMap<String, Job> jobs = new TreeMap<String, Job>();
 
 	String tid ="";
-	
+
 	//public TransporterPort() {}
-	
+
 	public TransporterPort(String tp) {
 
 		this.tid=tp;
 		//Create Jobs
 
-//		jobs.put("1", new Job("Lisboa", "Porto", "UpaTransporter1", "1", 10, JobStateView.values()[0]));
-//		jobs.put("2", new Job("Bragança", "Leiria", "UpaTransporter1", "2", 25, JobStateView.values()[0]));
+		//		jobs.put("1", new Job("Lisboa", "Porto", "UpaTransporter1", "1", 10, JobStateView.values()[0]));
+		//		jobs.put("2", new Job("Bragança", "Leiria", "UpaTransporter1", "2", 25, JobStateView.values()[0]));
 
 	}
-	
+
+
 	public Integer genRandom(Integer min, Integer max){
 		Random r = new Random();
 		int result = r.nextInt(max-min) + min;
 		return result;
 	}
-	
+
 	public String getNextId(){
 		Integer id=0;
 
@@ -44,21 +45,21 @@ public class TransporterPort implements TransporterPortType{
 		}
 		return String.valueOf(id+1);
 	}
-	
+
 	public String getTransp(String origin , String destination){
-		
+
 		//Check if there are sufficient verifications
 		String [] norte = {"Porto", "Braga", "Viana do Castelo", "Vila Real", "Bragança"};
-//		String [] centro = {"Lisboa" , "Leiria", "Santaré́m", "Castelo Branco", "Coimbra", "Aveiro", 
-//				"Viseu", "Guarda"};
-//		String [] sul = {"Setúbal","É́vora","Portalegre","Beja","Faro"};
-		
+		//		String [] centro = {"Lisboa" , "Leiria", "Santaré́m", "Castelo Branco", "Coimbra", "Aveiro", 
+		//				"Viseu", "Guarda"};
+		//		String [] sul = {"Setúbal","É́vora","Portalegre","Beja","Faro"};
+
 		for (String n: norte){
 			if ( origin.equals(n) || destination.equals(n) ){
 				return "UpaTransporter2";
 			}
 		}
-			return "UpaTransporter1";
+		return "UpaTransporter1";
 	}
 
 
@@ -88,40 +89,74 @@ public class TransporterPort implements TransporterPortType{
 			p.setPrice(price);
 			throw new BadPriceFault_Exception("Preço menor que zero", p);
 		}
-		if(price>100){
-			return null;
-		}
 
-		else if(price<=10){
-			String newId=getNextId();
-			Job newJ = new Job(origin, destination, getTransp(origin, destination), newId, genRandom(0,price), JobStateView.values()[0]);
-			jobs.put(newId, newJ);
-			return newJ.getJob();
-		}
-		
-		
-		//If price: 10<=price<100
-		else{
-			
-			//Integer tid= genRandom(1,3);
-			String transp="UpaTransporter"+tid;
-			//String.valueOf(tid);
-			
-			
-			if ( (price % 2 == 0 && Integer.parseInt(tid) %2 ==0) || (price % 2 != 0 && Integer.parseInt(tid) %2 !=0)){
+		//		JobView t1 = t1Job(String origin, String destination, int price);
+		//		JobView t2 = t2Job(String origin, String destination, int price);
+
+		if (tid.equals("1")){
+			//Tratamento do UpaTransporter1
+			if(getTransp(origin, destination).equals("UpaTransporter2")){
+				return null;
+			}
+
+			else if(price>100){
+				return null;
+			}
+
+			else if(price<=10){
 				String newId=getNextId();
-				int newPrice=genRandom(0,price);
-				Job newJ =new Job(origin, destination, transp, newId, newPrice, JobStateView.values()[0]);
+				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(0,price), JobStateView.values()[0]);
 				jobs.put(newId, newJ);
 				return newJ.getJob();
 			}
+
+			else if (price %2 !=0){
+				String newId=getNextId();
+				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(0,price), JobStateView.values()[0]);
+				jobs.put(newId, newJ);
+				return newJ.getJob();
+			}
+
 			else{
 				String newId=getNextId();
-				int newPrice=genRandom(price,100);
-				Job newJ =new Job(origin, destination, transp, newId, newPrice, JobStateView.values()[0]);
+				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(price,101), JobStateView.values()[0]);
 				jobs.put(newId, newJ);
 				return newJ.getJob();
 			}
+
+		}
+
+		else{
+			//Tratamento do UpaTransporter2
+			if(getTransp(origin, destination).equals("UpaTransporter1")){
+				return null;
+			}
+
+			else if(price>100){
+				return null;
+			}
+
+			else if(price<=10){
+				String newId=getNextId();
+				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(0,price), JobStateView.values()[0]);
+				jobs.put(newId, newJ);
+				return newJ.getJob();
+			}
+
+			else if (price %2 ==0){
+				String newId=getNextId();
+				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(0,price), JobStateView.values()[0]);
+				jobs.put(newId, newJ);
+				return newJ.getJob();
+			}
+
+			else{
+				String newId=getNextId();
+				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(price,101), JobStateView.values()[0]);
+				jobs.put(newId, newJ);
+				return newJ.getJob();
+			}
+
 		}
 
 	}
@@ -137,6 +172,10 @@ public class TransporterPort implements TransporterPortType{
 
 			if(id.equals(key) && accept==true){
 				value.getJob().setJobState(JobStateView.values()[2]);
+
+				ChangeStateThread p = new ChangeStateThread(value);
+				p.start();
+
 				return value.getJob();
 			}
 			else if(id.equals(key) && accept==false){
@@ -159,6 +198,8 @@ public class TransporterPort implements TransporterPortType{
 		for(Map.Entry<String, Job> entry : jobs.entrySet()) {
 			String key = entry.getKey();
 			Job value = entry.getValue();
+
+			System.out.println(key+value);
 			if(id.equals(key)){
 				return value.getJob();
 			}

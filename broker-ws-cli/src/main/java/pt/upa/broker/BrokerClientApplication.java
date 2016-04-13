@@ -10,6 +10,7 @@ import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
 
 import pt.upa.broker.ws.BrokerPortType;
 import pt.upa.broker.ws.BrokerService;
+import pt.upa.broker.ws.TransportView;
 
 public class BrokerClientApplication {
 
@@ -49,9 +50,11 @@ public class BrokerClientApplication {
 		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 
 		System.out.println("Remote call ...");
-		
-		System.out.println(port.requestTransport("Porto", "Braga", 10));
-		System.out.println(port.viewTransport("1").getOrigin()+port.viewTransport("1").getDestination() + port.viewTransport("1").getPrice()+ port.viewTransport("1").getState()+port.viewTransport("1").getTransporterCompany());
+		String y =port.requestTransport("Porto", "Braga", 10);
+		System.out.println(y);
+		System.out.println(port.listTransports());
+		//System.out.println(port.viewTransport("1").getState());
+		System.out.println(port.viewTransport(y).getOrigin()+port.viewTransport(y).getDestination() + port.viewTransport(y).getPrice()+ port.viewTransport(y).getState()+port.viewTransport(y).getTransporterCompany());
 
 	}
 }
