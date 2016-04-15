@@ -31,18 +31,7 @@ public class BrokerPort implements BrokerPortType {
 		t1 = new TransporterClient("http://localhost:9090", "UpaTransporter1");
 		t2= new TransporterClient("http://localhost:9090", "UpaTransporter2");
 
-
-		//		transporters.put("1", new Transport("1","Lisboa","Porto",2, "UpaTransporter1",TransportStateView.values()[0]));
-		//		transporters.put("2", new Transport("2","Bragança", "Leiria",0, "UpaTransporter1",TransportStateView.values()[0]));
-
 	}
-	//	public TransporterPort getTransporter(TransporterPort port){
-	//		if(port==null){
-	//			return new TransporterPort();
-	//		}
-	//		
-	//		return port;
-	//	}
 
 
 	public TransporterClient getTransp(String origin , String destination) throws UnavailableTransportFault_Exception, JAXRException{
@@ -57,10 +46,6 @@ public class BrokerPort implements BrokerPortType {
 			for (String s :sul){
 
 				if (  (origin.equals(n)&&destination.equals(s)) || (origin.equals(s)&&destination.equals(n))  ){
-//					UnavailableTransportFault b = new UnavailableTransportFault();
-//					b.setOrigin(origin);
-//					b.setDestination(destination);
-//					throw new UnavailableTransportFault_Exception("Viagem indisponivel", b);
 					return null;
 				}
 			}
@@ -139,7 +124,7 @@ public class BrokerPort implements BrokerPortType {
 			p.setPrice(price);
 			throw new InvalidPriceFault_Exception("O preço é inválido",p);
 		}
-		
+
 		try {
 			if(getTransp(origin, destination)==null){
 				UnavailableTransportFault b = new UnavailableTransportFault();
@@ -151,10 +136,6 @@ public class BrokerPort implements BrokerPortType {
 			e1.printStackTrace();
 		}
 		String id = getNextId();
-
-
-		//		TransporterPort t1 = new TransporterPort("1");
-		//		TransporterPort t2 = new TransporterPort("2");
 
 		//Requested
 		transporters.put(id, new Transport(id,origin,destination ,price, null,TransportStateView.values()[0]));
@@ -296,25 +277,26 @@ public class BrokerPort implements BrokerPortType {
 
 	@Override
 	public TransportView viewTransport(String id) throws UnknownTransportFault_Exception {
-		//		if(id==null){
-		//			UnknownTransportFault b = new UnknownTransportFault();
-		//			b.setId(id);
-		//			throw new UnknownTransportFault_Exception("O id é inválido", b);
-		//		}
-		//		else{
 
 		for(Map.Entry<String,Transport > entry : transporters.entrySet()) {
 			String key = entry.getKey();
 			Transport value = entry.getValue();
 			if(id.equals(key)){
-				TransportStateView tsv = convertState(t2.jobStatus(id).getJobState());
-				if (tsv==null){
+				TransportStateView tsv = null;
+				if (value.getJob().getTransporterCompany().equals("UpaTransporter1")){
+					tsv = convertState(t1.jobStatus(id).getJobState());
+				}
+				else if (value.getJob().getTransporterCompany().equals("UpaTransporter2")){
+					tsv = convertState(t2.jobStatus(id).getJobState());
+
+				}
+				else if (tsv==null){
 					return value.getJob();
 				}
-				else{
-					value.getJob().setState(tsv);
-					return value.getJob();
-				}
+
+				value.getJob().setState(tsv);
+				return value.getJob();
+
 			}
 		}
 		UnknownTransportFault b = new UnknownTransportFault();

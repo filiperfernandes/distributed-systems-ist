@@ -15,8 +15,6 @@ public class TransporterClientApplication {
 		System.out.println(uddiURL+name);
 		TransporterClient client = new TransporterClient(uddiURL, name);
 
-		System.out.println(client.ping("123"));
-
 
 	}
 }

@@ -85,7 +85,5 @@ public class TransporterClient implements TransporterPortType {
 	public void clearJobs() {
 		stub.clearJobs();
 	}
-
-
 }
 
