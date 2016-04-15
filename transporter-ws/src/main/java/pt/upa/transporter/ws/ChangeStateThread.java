@@ -27,7 +27,6 @@ public class ChangeStateThread extends Thread{
 		    TimeUnit.SECONDS.sleep(time);
 		    job.getJob().setJobState(JobStateView.values()[5]);
 		} catch (InterruptedException e) {
-		    //Handle exception
 		}
 	}
 }

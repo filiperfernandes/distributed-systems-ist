@@ -23,7 +23,6 @@ public class BrokerPort implements BrokerPortType {
 	TransporterClient t1 ;
 	TransporterClient t2;
 
-	//List<JobView> list = new TransporterPort().listJobs();
 
 	String tid="";
 
@@ -147,19 +146,15 @@ public class BrokerPort implements BrokerPortType {
 		try {
 			j1 = t1.requestJob(origin, destination, price);
 		} catch (BadLocationFault_Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (BadPriceFault_Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			j2 = t2.requestJob(origin, destination, price);
 		} catch (BadLocationFault_Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (BadPriceFault_Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
