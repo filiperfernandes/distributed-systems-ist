@@ -44,9 +44,8 @@ mkdir Projecto-sdis-T30
 [3] Obter código fonte do projeto (versão entregue)
 
 ```
-git clone ...
-```
 git clone -b SD_R1 https://github.com/tecnico-softeng-distsys-2015/T_30-project.git
+```
 
 
 [4] Instalar módulos de bibliotecas auxiliares
