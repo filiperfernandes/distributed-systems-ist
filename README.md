@@ -28,17 +28,17 @@ Indicar Windows ou Linux
 [1] Iniciar servidores de apoio
 
 JUDDI:
-```
-...
-```
+cd /juddi-3.3.2_tomcat-7.0.64_9090/bin
+If linux or macos
+sh startup.sh
+If windows
+startup.bat
 
 
 [2] Criar pasta temporária
 
-```
 cd ~/Desktop
 mkdir Projecto-sdis-T30
-```
 
 
 [3] Obter código fonte do projeto (versão entregue)
@@ -56,11 +56,6 @@ cd uddi-naming
 mvn clean install
 ```
 
-```
-cd ...
-mvn clean install
-```
-
 
 -------------------------------------------------------------------------------
 
@@ -69,15 +64,22 @@ mvn clean install
 [1] Construir e executar **servidor**
 
 ```
-cd ...-ws
+cd Projecto-sdis-T30/T_30-project/transporter-ws
 mvn clean install
 mvn exec:java
 ```
-
-[2] Construir **cliente** e executar testes
+[2] Construir e executar **servidor**
 
 ```
-cd ...-ws-cli
+cd Projecto-sdis-T30/T_30-project/transporter-ws
+mvn -Dws.i=2 exec:java
+```
+
+
+[3] Construir **cliente** e executar testes
+
+```
+cd Projecto-sdis-T30/T_30-project/transporter-ws-cli
 mvn clean install
 ```
 
@@ -91,7 +93,7 @@ mvn clean install
 [1] Construir e executar **servidor**
 
 ```
-cd ...-ws
+cd Projecto-sdis-T30/T_30-project/broker-ws
 mvn clean install
 mvn exec:java
 ```
@@ -100,7 +102,7 @@ mvn exec:java
 [2] Construir **cliente** e executar testes
 
 ```
-cd ...-ws-cli
+cd Projecto-sdis-T30/T_30-project/broker-ws-cli
 mvn clean install
 ```
 

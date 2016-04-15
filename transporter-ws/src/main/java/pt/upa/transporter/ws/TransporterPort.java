@@ -20,10 +20,6 @@ public class TransporterPort implements TransporterPortType{
 	public TransporterPort(String tp) {
 
 		this.tid=tp;
-		//Create Jobs
-
-		//		jobs.put("1", new Job("Lisboa", "Porto", "UpaTransporter1", "1", 10, JobStateView.values()[0]));
-		//		jobs.put("2", new Job("Bragança", "Leiria", "UpaTransporter1", "2", 25, JobStateView.values()[0]));
 
 	}
 
