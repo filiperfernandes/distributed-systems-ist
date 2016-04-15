@@ -46,7 +46,7 @@ mkdir Projecto-sdis-T30
 ```
 git clone ...
 ```
-*(colocar aqui comandos git para obter a versão entregue a partir da tag e depois apagar esta linha)*
+git clone -b SD_R1 https://github.com/tecnico-softeng-distsys-2015/T_30-project.git
 
 
 [4] Instalar módulos de bibliotecas auxiliares
