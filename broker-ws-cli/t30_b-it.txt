@@ -1,0 +1,62 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building broker-ws-cli 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ broker-ws-cli ---
+[INFO] Deleting /Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/target
+[INFO] 
+[INFO] --- jaxws-maven-plugin:2.3:wsimport (default) @ broker-ws-cli ---
+[INFO] Processing: file:/Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/../broker-ws/src/main/resources/broker.1_0.wsdl
+[INFO] jaxws:wsimport args: [-keep, -s, /Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/target/generated-sources/wsimport, -d, /Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/target/classes, -encoding, UTF-8, -Xnocompile, "file:/Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/../broker-ws/src/main/resources/broker.1_0.wsdl"]
+parsing WSDL...
+
+
+
+Generating code...
+
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ broker-ws-cli ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ broker-ws-cli ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 28 source files to /Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ broker-ws-cli ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ broker-ws-cli ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ broker-ws-cli ---
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ broker-ws-cli ---
+[INFO] Building jar: /Users/Filipe/Documents/GitHub/T_30-project/broker-ws-cli/target/broker-ws-cli-1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-failsafe-plugin:2.19.1:integration-test (default) @ broker-ws-cli ---
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running pt.upa.broker.ws.it.ExampleIT
+objc[5958]: Class JavaLaunchHelper is implemented in both /Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home/jre/bin/java and /Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home/jre/lib/libinstrument.dylib. One of the two will be used. Which one is undefined.
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.671 sec - in pt.upa.broker.ws.it.ExampleIT
+
+Results :
+
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-failsafe-plugin:2.19.1:verify (default) @ broker-ws-cli ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 15.848 s
+[INFO] Finished at: 2016-04-22T12:21:12+01:00
+[INFO] Final Memory: 25M/276M
+[INFO] ------------------------------------------------------------------------

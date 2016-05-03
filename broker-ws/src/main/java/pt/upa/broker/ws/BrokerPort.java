@@ -108,6 +108,10 @@ public class BrokerPort implements BrokerPortType {
 			throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception,
 			UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception {
 
+		if(origin==null||destination==null){
+			UnknownLocationFault b = new UnknownLocationFault();
+			throw new UnknownLocationFault_Exception("Invalid Transport", b);
+		}
 
 		if(!checkValidLocation(origin)){
 			UnknownLocationFault b = new UnknownLocationFault();
@@ -137,7 +141,7 @@ public class BrokerPort implements BrokerPortType {
 		String id = getNextId();
 
 		//Requested
-		transporters.put(id, new Transport(id,origin,destination ,price, null,TransportStateView.values()[0]));
+		Transport t = new Transport(id,origin,destination ,price, null,TransportStateView.values()[0]);
 
 		JobView j1 = null;
 		JobView j2 = null;
@@ -145,19 +149,12 @@ public class BrokerPort implements BrokerPortType {
 		//Check transporters for jobs
 		try {
 			j1 = t1.requestJob(origin, destination, price);
-		} catch (BadLocationFault_Exception e) {
-			e.printStackTrace();
-		} catch (BadPriceFault_Exception e) {
-			e.printStackTrace();
-		}
-		try {
 			j2 = t2.requestJob(origin, destination, price);
 		} catch (BadLocationFault_Exception e) {
 			e.printStackTrace();
 		} catch (BadPriceFault_Exception e) {
 			e.printStackTrace();
 		}
-
 
 		if (j1==null&&j2==null){
 			UnavailableTransportFault b = new UnavailableTransportFault();
@@ -167,7 +164,6 @@ public class BrokerPort implements BrokerPortType {
 		}
 
 		//Por a budgeted
-		Transport t = transporters.get(id);
 		t.getJob().setState(TransportStateView.values()[1]);
 
 
@@ -175,6 +171,7 @@ public class BrokerPort implements BrokerPortType {
 			try {
 				t2.decideJob(j2.getJobIdentifier(), true);
 				t.getJob().setTransporterCompany("2");
+				t.getJob().setPrice(j2.getJobPrice());
 			} catch (BadJobFault_Exception e) {
 				e.printStackTrace();
 			}
@@ -184,6 +181,7 @@ public class BrokerPort implements BrokerPortType {
 			try {
 				t1.decideJob(j1.getJobIdentifier(), true);
 				t.getJob().setTransporterCompany("1");
+				t.getJob().setPrice(j1.getJobPrice());
 			} catch (BadJobFault_Exception e) {
 				e.printStackTrace();
 			}
@@ -193,14 +191,14 @@ public class BrokerPort implements BrokerPortType {
 			t.getJob().setState(TransportStateView.values()[2]);
 			UnavailableTransportPriceFault b = new UnavailableTransportPriceFault();
 			b.setBestPriceFound(price);
-			throw new UnavailableTransportPriceFault_Exception("There's no transport with the desired price", b);
+			throw new UnavailableTransportPriceFault_Exception("There's no transport with the desired price, E:1", b);
 		}
 
 		else if (j2==null && j1.getJobPrice()>price){
 			t.getJob().setState(TransportStateView.values()[2]);
 			UnavailableTransportPriceFault b = new UnavailableTransportPriceFault();
 			b.setBestPriceFound(price);
-			throw new UnavailableTransportPriceFault_Exception("There's no transport with the desired price", b);
+			throw new UnavailableTransportPriceFault_Exception("There's no transport with the desired price, E:2", b);
 		}
 
 
@@ -208,7 +206,7 @@ public class BrokerPort implements BrokerPortType {
 			t.getJob().setState(TransportStateView.values()[2]);
 			UnavailableTransportPriceFault b = new UnavailableTransportPriceFault();
 			b.setBestPriceFound(price);
-			throw new UnavailableTransportPriceFault_Exception("There's no transport with the desired price", b);
+			throw new UnavailableTransportPriceFault_Exception("There's no transport with the desired price, E:3", b);
 		}
 
 		else{
@@ -219,10 +217,7 @@ public class BrokerPort implements BrokerPortType {
 				try {
 					t1.decideJob(j1.getJobIdentifier(), true);
 					t.getJob().setTransporterCompany("1");
-				} catch (BadJobFault_Exception e) {
-					e.printStackTrace();
-				}
-				try {
+					t.getJob().setPrice(j1.getJobPrice());
 					t2.decideJob(j2.getJobIdentifier(), false);
 				} catch (BadJobFault_Exception e) {
 					e.printStackTrace();
@@ -231,30 +226,24 @@ public class BrokerPort implements BrokerPortType {
 			else if (j1.getJobPrice()>j2.getJobPrice()){
 				try {
 					t1.decideJob(j1.getJobIdentifier(), false);
-				} catch (BadJobFault_Exception e) {
-					e.printStackTrace();
-				}
-				try {
 					t2.decideJob(j2.getJobIdentifier(), true);
 					t.getJob().setTransporterCompany("2");
+					t.getJob().setPrice(j2.getJobPrice());
 				} catch (BadJobFault_Exception e) {
 					e.printStackTrace();
 				}
 			}
 
-
 			else{
 				try {
 					t1.decideJob(j1.getJobIdentifier(), true);
 					t.getJob().setTransporterCompany("1");
-				} catch (BadJobFault_Exception e) {
-					e.printStackTrace();
-				}
-				try {
+					t.getJob().setPrice(j1.getJobPrice());
 					t2.decideJob(j2.getJobIdentifier(), false);
 				} catch (BadJobFault_Exception e) {
 					e.printStackTrace();
 				}
+
 			}
 
 		}
@@ -262,6 +251,7 @@ public class BrokerPort implements BrokerPortType {
 
 		//Booked
 		t.getJob().setState(TransportStateView.values()[3]);
+		transporters.put(id, t);
 		return t.getJob().getId();
 	}
 
@@ -272,6 +262,13 @@ public class BrokerPort implements BrokerPortType {
 
 	@Override
 	public TransportView viewTransport(String id) throws UnknownTransportFault_Exception {
+
+
+		if (id==null){
+			UnknownTransportFault b = new UnknownTransportFault();
+			b.setId(id);
+			throw new UnknownTransportFault_Exception("Invalid id", b);
+		}
 
 		for(Map.Entry<String,Transport > entry : transporters.entrySet()) {
 			String key = entry.getKey();

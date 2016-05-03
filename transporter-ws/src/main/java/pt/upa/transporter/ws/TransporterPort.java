@@ -44,8 +44,8 @@ public class TransporterPort implements TransporterPortType{
 
 		//Check if there are sufficient verifications
 		String [] norte = {"Porto", "Braga", "Viana do Castelo", "Vila Real", "Bragança"};
-		//		String [] centro = {"Lisboa" , "Leiria", "Santaré́m", "Castelo Branco", "Coimbra", "Aveiro", 
-		//				"Viseu", "Guarda"};
+		//String [] centro = {"Lisboa" , "Leiria", "Santaré́m", "Castelo Branco", "Coimbra", "Aveiro", 
+		//"Viseu", "Guarda"};
 		//		String [] sul = {"Setúbal","É́vora","Portalegre","Beja","Faro"};
 
 		for (String n: norte){
@@ -53,7 +53,21 @@ public class TransporterPort implements TransporterPortType{
 				return "UpaTransporter2";
 			}
 		}
+
 		return "UpaTransporter1";
+	}
+
+	public String checkCenter(String location){
+
+		String [] centro = {"Lisboa" , "Leiria", "Santarém", "Castelo Branco", "Coimbra", "Aveiro", 
+				"Viseu", "Guarda"};
+
+		for (String c: centro){
+			if (location.equals(c) ){
+				return "center";
+			}
+		}
+		return null;
 	}
 
 
@@ -66,7 +80,11 @@ public class TransporterPort implements TransporterPortType{
 	public JobView requestJob(String origin, String destination, int price)
 			throws BadLocationFault_Exception, BadPriceFault_Exception {
 
-		pt.upa.transporter.ws.Job.checkValidLocation(origin);
+		if(origin==null|| destination==null){
+			BadLocationFault b = new BadLocationFault();
+			b.setLocation(origin);
+			throw new BadLocationFault_Exception("Invalid Job", b);
+		}
 
 		if(!(pt.upa.transporter.ws.Job.checkValidLocation(origin))){
 			BadLocationFault b = new BadLocationFault();
@@ -96,14 +114,14 @@ public class TransporterPort implements TransporterPortType{
 
 			else if(price<=10){
 				String newId=getNextId();
-				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(0,price), JobStateView.values()[0]);
+				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(1,price), JobStateView.values()[0]);
 				jobs.put(newId, newJ);
 				return newJ.getJob();
 			}
 
 			else if (price %2 !=0){
 				String newId=getNextId();
-				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(0,price), JobStateView.values()[0]);
+				Job newJ = new Job(origin, destination, "UpaTransporter1", newId, genRandom(1,price), JobStateView.values()[0]);
 				jobs.put(newId, newJ);
 				return newJ.getJob();
 			}
@@ -120,23 +138,28 @@ public class TransporterPort implements TransporterPortType{
 		else{
 			//Tratamento do UpaTransporter2
 			if(getTransp(origin, destination).equals("UpaTransporter1")){
-				return null;
+				if(checkCenter(origin)==null||checkCenter(destination)==null){
+					return null;
+				}
+				
+
 			}
 
-			else if(price>100){
+
+			if(price>100){
 				return null;
 			}
 
 			else if(price<=10){
 				String newId=getNextId();
-				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(0,price), JobStateView.values()[0]);
+				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(1,price), JobStateView.values()[0]);
 				jobs.put(newId, newJ);
 				return newJ.getJob();
 			}
 
 			else if (price %2 ==0){
 				String newId=getNextId();
-				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(0,price), JobStateView.values()[0]);
+				Job newJ = new Job(origin, destination, "UpaTransporter2", newId, genRandom(1,price), JobStateView.values()[0]);
 				jobs.put(newId, newJ);
 				return newJ.getJob();
 			}
@@ -147,21 +170,30 @@ public class TransporterPort implements TransporterPortType{
 				jobs.put(newId, newJ);
 				return newJ.getJob();
 			}
-
 		}
-
 	}
+
+
+
+
 
 
 
 	@Override
 	public JobView decideJob(String id, boolean accept) throws BadJobFault_Exception {
 
-		for(Map.Entry<String, Job> entry : jobs.entrySet()) {
-			String key = entry.getKey();
-			Job value = entry.getValue();
 
-			if(id.equals(key) && accept==true){
+		if (id==null){
+			BadJobFault j = new BadJobFault();
+			j.setId(id);
+			throw new BadJobFault_Exception("Invalid Job", j);
+		}
+
+		for(Map.Entry<String, Job> entry : jobs.entrySet()) {
+			Job value = entry.getValue();
+			String key2 = entry.getValue().getJob().getJobIdentifier();
+
+			if(id.equals(key2) && accept && value.getJob().getJobState().equals(JobStateView.PROPOSED)){
 				value.getJob().setJobState(JobStateView.values()[2]);
 
 				ChangeStateThread p = new ChangeStateThread(value);
@@ -169,22 +201,23 @@ public class TransporterPort implements TransporterPortType{
 
 				return value.getJob();
 			}
-			else if(id.equals(key) && accept==false){
+			else if(id.equals(key2) && accept==false && value.getJob().getJobState().equals(JobStateView.PROPOSED)){
 				value.getJob().setJobState(JobStateView.values()[1]);
 				return value.getJob();
 			}
-			else{
-				BadJobFault j = new BadJobFault();
-				j.setId(id);
-				throw new BadJobFault_Exception("Invalid Job", j);
-			}
 
 		}
-		return null;
+		BadJobFault j = new BadJobFault();
+		j.setId(id);
+		throw new BadJobFault_Exception("Invalid Job", j);
 	}
 
 	@Override
 	public JobView jobStatus(String id) {
+
+		if (id==null){
+			return null;
+		}
 
 		for(Map.Entry<String, Job> entry : jobs.entrySet()) {
 			String key = entry.getKey();
