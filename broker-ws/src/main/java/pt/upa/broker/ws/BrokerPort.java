@@ -74,7 +74,7 @@ public class BrokerPort implements BrokerPortType {
 		else if (state==JobStateView.values()[5]){
 			return TransportStateView.values()[6];
 		}
-		return null;
+		return TransportStateView.BOOKED;
 	}
 
 	public boolean checkValidLocation(String location){
@@ -293,6 +293,8 @@ public class BrokerPort implements BrokerPortType {
 	@Override
 	public TransportView viewTransport(String id) throws UnknownTransportFault_Exception {
 
+		int i = 0;
+		int j = 0;
 
 		if (id==null){
 			UnknownTransportFault b = new UnknownTransportFault();
@@ -302,17 +304,31 @@ public class BrokerPort implements BrokerPortType {
 
 		for (TransportView element : transporters) {
 			String key = element.getId();
+			if(element.getTransporterCompany().equals("1")){
+				i++;
+			}
+			if (element.getTransporterCompany().equals("2")){
+				j++;
+			}
 			if(id.equals(key)){
 				TransportStateView tsv = null;
-				if (element.getTransporterCompany().equals("UpaTransporter1")){
-					tsv = convertState(t1.jobStatus(id).getJobState());
+				if (element.getTransporterCompany().equals("1")&& t1.jobStatus(Integer.toString(i))!=null){
+					if ( t1.jobStatus(Integer.toString(i)).getJobState()!=null){
+						
+						tsv = convertState(t1.jobStatus(Integer.toString(i)).getJobState());
+					}
 				}
-				else if (element.getTransporterCompany().equals("UpaTransporter2")){
-					tsv = convertState(t2.jobStatus(id).getJobState());
+				else if (element.getTransporterCompany().equals("2")&& t2.jobStatus(Integer.toString(i))!=null){
+					
+					if (t1.jobStatus(Integer.toString(j)).getJobState()!=null){
+						
+						tsv = convertState(t2.jobStatus(Integer.toString(j)).getJobState());
+					}
 
 				}
-				else if (tsv==null){
-					return element;
+				
+				if (tsv==null){
+					tsv=TransportStateView.BOOKED;
 				}
 
 				element.setState(tsv);

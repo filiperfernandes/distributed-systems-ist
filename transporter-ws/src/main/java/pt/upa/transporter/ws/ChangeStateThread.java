@@ -17,12 +17,18 @@ public class ChangeStateThread extends Thread{
 		int time = r.nextInt(6-1) + 1;
 		
 		try {
+		    
 		    TimeUnit.SECONDS.sleep(time);
 		    job.getJob().setJobState(JobStateView.values()[3]);
 		
+		    r = new Random();
+		    time = r.nextInt(6-1) + 1;
 		
 		    TimeUnit.SECONDS.sleep(time);
 		    job.getJob().setJobState(JobStateView.values()[4]);
+		    
+		    r = new Random();
+		    time = r.nextInt(6-1) + 1;
 		
 		    TimeUnit.SECONDS.sleep(time);
 		    job.getJob().setJobState(JobStateView.values()[5]);
