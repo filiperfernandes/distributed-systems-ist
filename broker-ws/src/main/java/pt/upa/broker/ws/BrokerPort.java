@@ -2,8 +2,6 @@ package pt.upa.broker.ws;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.jws.WebService;
 import javax.xml.registry.JAXRException;
@@ -18,18 +16,27 @@ import pt.upa.transporter.ws.cli.TransporterClient;
 @WebService(endpointInterface = "pt.upa.broker.ws.BrokerPortType")
 public class BrokerPort implements BrokerPortType {
 
-	TreeMap<String, Transport> transporters = new TreeMap<String, Transport>();
+	//TreeMap<String, Transport> transporters = new TreeMap<String, Transport>();
+
+	List<TransportView> transporters = new ArrayList<TransportView>();
 
 	TransporterClient t1 ;
 	TransporterClient t2;
 
 
-	String tid="";
+	String tmp="";
 
-	public BrokerPort() throws JAXRException {
+	String tid="";
+	String bid="";
+
+	public BrokerPort(String bid) throws JAXRException {
+		this.bid=bid;
 		t1 = new TransporterClient("http://localhost:9090", "UpaTransporter1");
 		t2= new TransporterClient("http://localhost:9090", "UpaTransporter2");
-
+		if(bid.equals("3")){
+			AliveThread aliveT = new AliveThread();
+			aliveT.start();
+		}
 	}
 
 
@@ -87,14 +94,23 @@ public class BrokerPort implements BrokerPortType {
 	public String getNextId(){
 		Integer id=0;
 
-		for(Map.Entry<String, Transport> entry : transporters.entrySet()) {
-			int key = Integer.parseInt(entry.getKey());
+		for (TransportView element : transporters) {
+			int key = Integer.parseInt(element.getId());
 			if(key>id){
 				id=key;
 			}
 		}
 		return String.valueOf(id+1);
 	}
+
+	//		for(Map.Entry<String, Transport> entry : transporters.entrySet()) {
+	//			int key = Integer.parseInt(entry.getKey());
+	//			if(key>id){
+	//				id=key;
+	//			}
+	//		}
+	//		return String.valueOf(id+1);
+	//	}
 
 	@Override
 	public String ping(String name) {
@@ -107,6 +123,7 @@ public class BrokerPort implements BrokerPortType {
 	public String requestTransport(String origin, String destination, int price)
 			throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception,
 			UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception {
+
 
 		if(origin==null||destination==null){
 			UnknownLocationFault b = new UnknownLocationFault();
@@ -251,7 +268,20 @@ public class BrokerPort implements BrokerPortType {
 
 		//Booked
 		t.getJob().setState(TransportStateView.values()[3]);
-		transporters.put(id, t);
+
+		transporters.add(t.getJob());
+		//transporters.put(id, t);
+
+		if (bid.equals("0")){
+
+			try {
+				UpdateS2 u = new UpdateS2();
+				u.pushUpdate(t.getJob());
+			} catch (JAXRException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+		}
 		return t.getJob().getId();
 	}
 
@@ -270,24 +300,23 @@ public class BrokerPort implements BrokerPortType {
 			throw new UnknownTransportFault_Exception("Invalid id", b);
 		}
 
-		for(Map.Entry<String,Transport > entry : transporters.entrySet()) {
-			String key = entry.getKey();
-			Transport value = entry.getValue();
+		for (TransportView element : transporters) {
+			String key = element.getId();
 			if(id.equals(key)){
 				TransportStateView tsv = null;
-				if (value.getJob().getTransporterCompany().equals("UpaTransporter1")){
+				if (element.getTransporterCompany().equals("UpaTransporter1")){
 					tsv = convertState(t1.jobStatus(id).getJobState());
 				}
-				else if (value.getJob().getTransporterCompany().equals("UpaTransporter2")){
+				else if (element.getTransporterCompany().equals("UpaTransporter2")){
 					tsv = convertState(t2.jobStatus(id).getJobState());
 
 				}
 				else if (tsv==null){
-					return value.getJob();
+					return element;
 				}
 
-				value.getJob().setState(tsv);
-				return value.getJob();
+				element.setState(tsv);
+				return element;
 
 			}
 		}
@@ -300,21 +329,54 @@ public class BrokerPort implements BrokerPortType {
 
 	@Override
 	public List<TransportView> listTransports() {
-		List<TransportView> list = new ArrayList<>();
 
-		for(Map.Entry<String, Transport> entry : transporters.entrySet()) {
-			TransportView value = entry.getValue().getJob();
-			list.add(value);
-		}
-		return list;
+		return transporters;
+
+		//		List<TransportView> list = new ArrayList<>();
+		//		for(Map.Entry<String, Transport> entry : transporters.entrySet()) {
+		//			TransportView value = entry.getValue().getJob();
+		//			list.add(value);
+		//		}
+		//		return list;
 	}
 
 	@Override
 	public void clearTransports() {
+
+		if (bid.equals("0")){
+			
+				UpdateS2 s2=null;
+				try {
+					s2 = new UpdateS2();
+				} catch (JAXRException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				s2.pushClearTransports();
+			
+		}
+		
+
 		transporters.clear();
 		t1.clearJobs();
 		t2.clearJobs();
 
+	}
+
+
+	@Override
+	public int imAlive() {
+			return 1;
+	}
+
+
+	@Override
+	public List<TransportView> update(TransportView info) {
+
+		if (info!=null){
+			transporters.add(info);
+		}
+		return transporters;
 	}
 
 

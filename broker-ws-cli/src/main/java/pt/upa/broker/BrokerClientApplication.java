@@ -7,10 +7,8 @@ import java.util.Map;
 import javax.xml.ws.BindingProvider;
 
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
-
 import pt.upa.broker.ws.BrokerPortType;
 import pt.upa.broker.ws.BrokerService;
-import pt.upa.broker.ws.TransportView;
 
 public class BrokerClientApplication {
 
@@ -26,6 +24,11 @@ public class BrokerClientApplication {
 
 		String uddiURL = args[0];
 		String name = args[1];
+		
+		
+//		String uddiURL = "http://localhost:9090";
+//		String name="UpaBroker3";
+		
 
 		System.out.printf("Contacting UDDI at %s%n", uddiURL);
 		UDDINaming uddiNaming = new UDDINaming(uddiURL);
@@ -50,10 +53,14 @@ public class BrokerClientApplication {
 		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 
 		System.out.println("Remote call ...");
-		String y =port.requestTransport("Porto", "Braga", 10);
-		System.out.println(y);
+		
+//		String a =port.requestTransport("Porto", "Braga", 10);
+		
 		System.out.println(port.listTransports());
-		//System.out.println(port.viewTransport("1").getState());
+//		port.clearTransports();
+//		System.out.println(y);
+//		//System.out.println(port.viewTransport("1").getState());
+		String y="1";
 		System.out.println(port.viewTransport(y).getOrigin()+port.viewTransport(y).getDestination() + port.viewTransport(y).getPrice()+ port.viewTransport(y).getState()+port.viewTransport(y).getTransporterCompany());
 
 	}

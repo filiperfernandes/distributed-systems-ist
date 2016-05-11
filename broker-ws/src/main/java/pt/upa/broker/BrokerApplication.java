@@ -20,19 +20,41 @@ public class BrokerApplication {
 		String name = args[1];
 		String url = args[2];
 
+
 		Endpoint endpoint = null;
 		UDDINaming uddiNaming = null;
 		try {
-			endpoint = Endpoint.create(new BrokerPort());
+			
+			if (name.equals("UpaBroker0")){
+				name="UpaBroker";
+				endpoint = Endpoint.create(new BrokerPort("0"));
+			}
+			else if (name.equals("UpaBroker3")){
+				endpoint = Endpoint.create(new BrokerPort("3"));
+			}
 
 			// publish endpoint
 			System.out.printf("Starting %s%n", url);
 			endpoint.publish(url);
-
+			
 			// publish to UDDI
 			System.out.printf("Publishing '%s' to UDDI at %s%n", name, uddiURL);
 			uddiNaming = new UDDINaming(uddiURL);
 			uddiNaming.rebind(name, url);
+
+			
+//			endpoint2 = Endpoint.create(new BrokerPort());
+//			// publish endpoint2
+//			System.out.printf("S2: Starting %s%n", url2);
+//			endpoint2.publish(url2);
+//			
+//			
+//			// publish to UDDI S2
+//			System.out.printf("S2: Publishing '%s' to UDDI at %s%n", name2, uddiURL);
+//			uddiNaming2 = new UDDINaming(uddiURL);
+//			uddiNaming2.rebind(name2, url2);
+
+
 
 			// wait
 			System.out.println("Awaiting connections");
@@ -50,6 +72,7 @@ public class BrokerApplication {
 					endpoint.stop();
 					System.out.printf("Stopped %s%n", url);
 				}
+
 			} catch (Exception e) {
 				System.out.printf("Caught exception when stopping: %s%n", e);
 			}
@@ -59,6 +82,7 @@ public class BrokerApplication {
 					uddiNaming.unbind(name);
 					System.out.printf("Deleted '%s' from UDDI%n", name);
 				}
+
 			} catch (Exception e) {
 				System.out.printf("Caught exception when deleting: %s%n", e);
 			}
