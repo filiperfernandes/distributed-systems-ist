@@ -50,6 +50,7 @@ public class AliveThread extends Thread{
 		while(true){
 			try {
 				stub.imAlive();
+				System.out.println("Im alive!");
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				System.exit(1);

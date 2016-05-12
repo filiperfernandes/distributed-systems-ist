@@ -31,7 +31,7 @@ public class ViewTransportIT extends AbstractIT {
 	  for (int t = 0; t <= 3 * DELAY_UPPER || !tS.isEmpty(); t += TENTH_OF_SECOND) {
 	    Thread.sleep(TENTH_OF_SECOND);
 	    vt = CLIENT.viewTransport(rt);
-	    System.out.println(vt.getState());
+	    //System.out.println(vt.getState());
 	    if (tS.contains(vt.getState()))
 	      tS.remove(vt.getState());
 	  }

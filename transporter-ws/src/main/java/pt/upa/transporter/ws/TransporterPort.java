@@ -223,7 +223,6 @@ public class TransporterPort implements TransporterPortType{
 			String key = entry.getKey();
 			Job value = entry.getValue();
 
-			System.out.println(key+value);
 			if(id.equals(key)){
 				return value.getJob();
 			}

@@ -275,6 +275,7 @@ public class BrokerPort implements BrokerPortType {
 		if (bid.equals("0")){
 
 			try {
+				System.out.println("Updating secundary server");
 				UpdateS2 u = new UpdateS2();
 				u.pushUpdate(t.getJob());
 			} catch (JAXRException e2) {
@@ -301,6 +302,7 @@ public class BrokerPort implements BrokerPortType {
 			b.setId(id);
 			throw new UnknownTransportFault_Exception("Invalid id", b);
 		}
+		TransportStateView tsv = null;
 
 		for (TransportView element : transporters) {
 			String key = element.getId();
@@ -311,24 +313,24 @@ public class BrokerPort implements BrokerPortType {
 				j++;
 			}
 			if(id.equals(key)){
-				TransportStateView tsv = null;
 				if (element.getTransporterCompany().equals("1")&& t1.jobStatus(Integer.toString(i))!=null){
+
 					if ( t1.jobStatus(Integer.toString(i)).getJobState()!=null){
-						
 						tsv = convertState(t1.jobStatus(Integer.toString(i)).getJobState());
 					}
 				}
 				else if (element.getTransporterCompany().equals("2")&& t2.jobStatus(Integer.toString(i))!=null){
-					
+
 					if (t1.jobStatus(Integer.toString(j)).getJobState()!=null){
-						
+
 						tsv = convertState(t2.jobStatus(Integer.toString(j)).getJobState());
 					}
 
 				}
-				
+
 				if (tsv==null){
-					tsv=TransportStateView.BOOKED;
+
+					return element;
 				}
 
 				element.setState(tsv);
@@ -360,18 +362,18 @@ public class BrokerPort implements BrokerPortType {
 	public void clearTransports() {
 
 		if (bid.equals("0")){
-			
-				UpdateS2 s2=null;
-				try {
-					s2 = new UpdateS2();
-				} catch (JAXRException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				s2.pushClearTransports();
-			
+
+			UpdateS2 s2=null;
+			try {
+				s2 = new UpdateS2();
+			} catch (JAXRException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			s2.pushClearTransports();
+
 		}
-		
+
 
 		transporters.clear();
 		t1.clearJobs();
@@ -382,7 +384,7 @@ public class BrokerPort implements BrokerPortType {
 
 	@Override
 	public int imAlive() {
-			return 1;
+		return 1;
 	}
 
 

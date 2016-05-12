@@ -44,7 +44,7 @@ mkdir Projecto-sdis-T30
 [3] Obter código fonte do projeto (versão entregue)
 
 ```
-git clone -b SD_R1 https://github.com/tecnico-softeng-distsys-2015/T_30-project.git
+git clone -b SD_R2 https://github.com/tecnico-softeng-distsys-2015/T_30-project.git
 ```
 
 
@@ -97,8 +97,15 @@ mvn clean install
 mvn exec:java
 ```
 
+[2] Construir e executar **servidor**
 
-[2] Construir **cliente** e executar testes
+```
+cd Projecto-sdis-T30/T_30-project/broker-ws
+mvn -Dws.i=3 exec:java
+```
+
+
+[3] Construir **cliente** e executar testes
 
 ```
 cd Projecto-sdis-T30/T_30-project/broker-ws-cli
@@ -108,4 +115,13 @@ mvn clean install
 ...
 
 -------------------------------------------------------------------------------
+
+### Para testar a tolerância a falta:
+
+```
+Causar a paragem súbita do servidor primário através de sigkill (CTRL-C)
+```
+
+
+
 **FIM**
