@@ -26,6 +26,10 @@ public class BrokerClient implements BrokerPortType{
 	BrokerPortType stub;
 	BrokerService service;
 
+	Map<String, Object> requestContext;
+
+	int retries = 10;
+
 	// constructor
 	public BrokerClient(String uddiURL, String name) throws JAXRException {
 		this.uddiURL=uddiURL;
@@ -50,7 +54,43 @@ public class BrokerClient implements BrokerPortType{
 
 		System.out.println("Setting endpoint address ...");
 		BindingProvider bindingProvider = (BindingProvider) stub;
-		Map<String, Object> requestContext = bindingProvider.getRequestContext();
+		requestContext = bindingProvider.getRequestContext();
+		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
+
+	}
+
+
+	private void autoSet() {
+
+		UDDINaming uddiNaming = null;
+		String endpointAddress = null;
+		int tries = 0;
+
+		while (tries++ < retries) {
+			try {
+				uddiNaming = new UDDINaming(uddiURL);
+
+				endpointAddress = uddiNaming.lookup(name);
+				break;
+			} catch (JAXRException e) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+				}
+				System.out.println("Attempting to reconnect");
+			}
+		}
+
+
+		if (endpointAddress == null) {
+			System.out.println("Service off-line");
+			System.exit(-1);
+		}
+		service = new BrokerService();
+		stub = service.getBrokerPort();
+		BindingProvider bindingProvider = (BindingProvider) stub;
+		requestContext = bindingProvider.getRequestContext();
+
 		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 
 	}
@@ -69,29 +109,121 @@ public class BrokerClient implements BrokerPortType{
 
 	@Override
 	public String ping(String name) {
-		return stub.ping(name);
+		int tries = 0;
+		while (tries++ < retries) {
+			try {
+				String p = stub.ping(name);
+				return p;
+			} catch (Exception e) {
+				try {
+					Thread.sleep(1000);
+					autoSet();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				System.out.println("Attempting to reconnect");
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public String requestTransport(String origin, String destination, int price)
 			throws InvalidPriceFault_Exception, UnavailableTransportFault_Exception,
 			UnavailableTransportPriceFault_Exception, UnknownLocationFault_Exception {
-		return stub.requestTransport(origin, destination, price);
+
+
+		int tries = 0;
+		while (tries++ < retries) {
+			try {
+				String p = stub.requestTransport(origin, destination, price);
+				return p;
+			} catch (Exception e) {
+
+				if (e instanceof InvalidPriceFault_Exception
+						|| e instanceof UnavailableTransportFault_Exception
+						|| e instanceof UnavailableTransportPriceFault_Exception
+						|| e instanceof UnknownLocationFault_Exception) {
+					throw e;
+				}
+
+				try {
+					Thread.sleep(1000);
+					autoSet();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				System.out.println("Attempting to reconnect");
+			}
+		}
+		return null;
 	}
+
 
 	@Override
 	public TransportView viewTransport(String id) throws UnknownTransportFault_Exception {
-		return stub.viewTransport(id);
+
+		int tries = 0;
+		while (tries++ < retries) {
+			try {
+				TransportView p = stub.viewTransport(id);
+				return p;
+			} catch (Exception e) {
+
+				if (e instanceof UnknownTransportFault_Exception) {
+					throw e;
+				}
+
+				try {
+					Thread.sleep(1000);
+					autoSet();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				System.out.println("Attempting to reconnect");
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public List<TransportView> listTransports() {
-		return stub.listTransports();
+		int tries = 0;
+		while (tries++ < retries) {
+			try {
+				List<TransportView> p = stub.listTransports();
+				return p;
+			} catch (Exception e) {
+				try {
+					Thread.sleep(1000);
+					autoSet();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				System.out.println("Attempting to reconnect");
+			}
+		}
+		return null;
 	}
+
+
 
 	@Override
 	public void clearTransports() {
-		stub.clearTransports();
+		int tries = 0;
+		while (tries++ < retries) {
+			try {
+				stub.clearTransports();
+			} catch (Exception e) {
+				try {
+					Thread.sleep(1000);
+					autoSet();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				System.out.println("Attempting to reconnect");
+			}
+		}
 	}
 
 

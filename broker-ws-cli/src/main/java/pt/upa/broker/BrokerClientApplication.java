@@ -12,6 +12,6 @@ public class BrokerClientApplication {
 
 		System.out.println(uddiURL+name);
 		BrokerClient client = new BrokerClient(uddiURL, name);
-		
+
 	}
 }
