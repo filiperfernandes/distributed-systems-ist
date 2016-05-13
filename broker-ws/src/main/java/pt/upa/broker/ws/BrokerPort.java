@@ -279,7 +279,6 @@ public class BrokerPort implements BrokerPortType {
 				UpdateS2 u = new UpdateS2();
 				u.pushUpdate(t.getJob());
 			} catch (JAXRException e2) {
-				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
 		}
@@ -363,14 +362,12 @@ public class BrokerPort implements BrokerPortType {
 
 		if (bid.equals("0")){
 
-			UpdateS2 s2=null;
 			try {
-				s2 = new UpdateS2();
+				UpdateS2 s2 = new UpdateS2();
+				s2.pushClearTransports();
 			} catch (JAXRException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			s2.pushClearTransports();
 
 		}
 
