@@ -12,6 +12,16 @@ public class BrokerClientApplication {
 
 		System.out.println(uddiURL+name);
 		BrokerClient client = new BrokerClient(uddiURL, name);
+		
+		
+		//client.requestTransport("Lisboa", "Porto", 5);
+		
+		System.out.println("............");
+		//Thread.sleep(1000);
+		
+		System.out.println(client.listTransports());
+		
+		System.out.println(client.viewTransport("1").getOrigin()+client.viewTransport("1").getDestination());
 
 	}
 }
